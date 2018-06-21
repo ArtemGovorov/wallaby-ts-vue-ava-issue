@@ -5,9 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "ava"
   },
   "dependencies": {
+    "@vue/test-utils": "^1.0.0-beta.19",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1"
   },
@@ -15,10 +17,20 @@
     "@vue/cli-plugin-babel": "^3.0.0-beta.15",
     "@vue/cli-plugin-typescript": "^3.0.0-beta.15",
     "@vue/cli-service": "^3.0.0-beta.15",
+    "ava": "1.0.0-beta.6",
+    "ava-ts": "^0.24.6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "browser-env": "^3.2.5",
     "lint-staged": "^6.0.0",
     "node-sass": "^4.9.0",
+    "require-extension-hooks": "^0.3.2",
+    "require-extension-hooks-babel": "^0.1.1",
+    "require-extension-hooks-vue": "^1.0.0",
     "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.16"
+    "ts-node": "^6.1.2",
+    "vue-jest": "^2.6.0",
+    "vue-template-compiler": "^2.5.16",
+    "wallaby-vue-compiler": "^1.0.2"
   },
   "browserslist": [
     "> 1%",
@@ -36,6 +48,37 @@
     "*.vue": [
       "vue-cli-service lint",
       "git add"
+    ]
+  },
+  "ava": {
+    "babel": {
+      "testOptions": {
+        "presets": [
+          [
+            "@vue/app",
+            {
+              "modules": "commonjs"
+            }
+          ]
+        ]
+      }
+    },
+    "files": [
+      "tests/**/*"
+    ],
+    "sources": [
+      "src/**/*",
+      "package.json",
+      "tsconfig.json"
+    ],
+    "cache": true,
+    "tap": false,
+    "require": [
+      "./tests/helpers/setup.js",
+      "ts-node/register/transpile-only"
+    ],
+    "extensions": [
+      "ts"
     ]
   }
 }
