@@ -1,10 +1,4 @@
-module.exports = function(wallaby) {
-  process.env.VUE_CLI_BABEL_TRANSPILE_MODULES = true;
-
-  const compiler = wallaby.compilers.babel({
-    presets: [['@vue/app', { modules: 'commonjs' }]],
-  });
-
+module.exports = function () {
   return {
     files: ['src/**/*', 'package.json', 'tsconfig.json'],
     tests: ['tests/**/*.spec.ts'],
@@ -19,13 +13,19 @@ module.exports = function(wallaby) {
           compact: false,
           filename: file.path,
           presets: ['env'],
-        }),
-      '**/*.vue': file => require('vue-jest').process(file.content, file.path),
+        })
     },
-    compilers: {
-      '**/*.js': compiler,
-      '**/*.ts': wallaby.compilers.typeScript(require('./tsconfig.json')),
-      '**/*.vue': require('wallaby-vue-compiler')(compiler),
+    setup: () => {
+      require('browser-env')();
+      const hooks = require('require-extension-hooks');
+      const Vue = require('vue');
+      Vue.config.productionTip = false;
+      hooks('vue')
+        .plugin('vue')
+        .push();
+      hooks(['vue', 'ts'])
+        .plugin('babel')
+        .push();
     },
     testFramework: 'ava',
     debug: true,
